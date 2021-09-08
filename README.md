@@ -17,7 +17,7 @@ This has been made for fun for my server and bugs may exist but feel free to rep
 ### Team Innocent
 
 **Phantom** 
-- Team Innocent, Haunts their killer and will resurrect when their killer is killed. Will also be able to possess and troll (energy permitting) if the convar is left enabled.
+- Haunts their killer and will resurrect when their killer is killed. Will also be able to possess and carry out actions (energy permitting) if the convar is left enabled.
 
 
 All Convars are adjustable via the [TTT2 Ulx Commmands](https://steamcommunity.com/sharedfiles/filedetails/?id=1362430347) which is recommended if youre running TTT2.
