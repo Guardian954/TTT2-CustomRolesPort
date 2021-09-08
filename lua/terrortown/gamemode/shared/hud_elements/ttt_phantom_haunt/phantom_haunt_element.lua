@@ -4,6 +4,9 @@ DEFINE_BASECLASS(base)
 
 HUDELEMENT.Base = base
 
+-- The following code was taken from LeBroomers Demonic possession for TTT2 and manipulated to suit, why remake the hud element when hes alrady made it better than I couldve
+-- Check out his addon: https://steamcommunity.com/sharedfiles/filedetails/?id=1615324913
+
 if CLIENT then -- CLIENT
     local const_defaults = {
         basepos = {x = 0, y = 0},
@@ -28,8 +31,6 @@ if CLIENT then -- CLIENT
 	end
 
     function HUDELEMENT:Initialize()
-        wepSwitchCost = GetConVar("ttt_demonic_power_req_wepswitch")
-
 		self.scale = 1.0
         self.basecolor = self:GetHUDBasecolor()
         self.pad = pad * self.scale
@@ -68,7 +69,6 @@ if CLIENT then -- CLIENT
 		local size = self:GetSize()
 		local x, y = pos.x, pos.y
 		local w, h = size.w, size.h
-        local supersheep = client.supersheep
         local fontColor = self:GetDefaultFontColor(self.basecolor)
 
 		-- draw bg
@@ -83,8 +83,8 @@ if CLIENT then -- CLIENT
         local powerY = y - self.pad - bh
         local dp = client:GetNWInt("HauntingPower", 0)
 
-        self:DrawBar(rx, powerY, bw, bh, barColor, dp / GetGlobalFloat("ttt_phantom_killer_haunt_power_max"), self.scale)
-        draw.AdvancedText(tostring(math.floor(dp)) .. " / " .. tostring(GetGlobalFloat("ttt_phantom_killer_haunt_power_max")), "PureSkinBar", rx + bw * 0.5, powerY + bh * 0.5, fontColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, true, self.scale)
+        self:DrawBar(rx, powerY, bw, bh, barColor, dp / GetGlobalFloat("ttt2_phantom_haunt_power_max"), self.scale)
+        draw.AdvancedText(tostring(math.floor(dp)) .. " / " .. tostring(GetGlobalFloat("ttt2_phantom_haunt_power_max")), "PureSkinBar", rx + bw * 0.5, powerY + bh * 0.5, fontColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, true, self.scale)
 
         draw.AdvancedText("Available Commands", "PureSkinBar", rx + bw * 0.5, ry, fontColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, true, self.scale)
 
@@ -96,25 +96,25 @@ if CLIENT then -- CLIENT
 
         draw.AdvancedText("Move Keys", "PureSkinItemInfo", rx , ry, fontColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_RIGHT, true, self.scale)
         draw.AdvancedText("Move the player", "PureSkinItemInfo", x + w * 0.5 , ry, fontColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT, true, self.scale)
-        draw.AdvancedText(tostring(GetGlobalFloat("ttt_phantom_killer_haunt_move_cost")) .. " Power", "PureSkinItemInfo", x + w - self.pad , ry, dp < GetGlobalFloat("ttt_phantom_killer_haunt_move_cost") and COLOR_RED or COLOR_GREEN, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT, true, self.scale)
+        draw.AdvancedText(tostring(GetGlobalFloat("ttt2_phantom_haunt_move_cost")) .. " Power", "PureSkinItemInfo", x + w - self.pad , ry, dp < GetGlobalFloat("ttt2_phantom_haunt_move_cost") and COLOR_RED or COLOR_GREEN, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT, true, self.scale)
 
         ry = ry + bh + self.pad
 
         draw.AdvancedText("Space", "PureSkinItemInfo", rx , ry, fontColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_RIGHT, true, self.scale)
         draw.AdvancedText("Jump for the player", "PureSkinItemInfo", x + w * 0.5 , ry, fontColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT, true, self.scale)
-        draw.AdvancedText(tostring(GetGlobalFloat("ttt_phantom_killer_haunt_jump_cost")) .. " Power", "PureSkinItemInfo", x + w - self.pad , ry, dp < GetGlobalFloat("ttt_phantom_killer_haunt_jump_cost") and COLOR_RED or COLOR_GREEN, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT, true, self.scale)
+        draw.AdvancedText(tostring(GetGlobalFloat("ttt2_phantom_haunt_jump_cost")) .. " Power", "PureSkinItemInfo", x + w - self.pad , ry, dp < GetGlobalFloat("ttt2_phantom_haunt_jump_cost") and COLOR_RED or COLOR_GREEN, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT, true, self.scale)
 
         ry = ry + bh + self.pad
 
         draw.AdvancedText("Right Click", "PureSkinItemInfo", rx , ry, fontColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_RIGHT, true, self.scale)
         draw.AdvancedText("Drop the players weapon", "PureSkinItemInfo", x + w * 0.5 , ry, fontColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT, true, self.scale)
-        draw.AdvancedText(tostring(GetGlobalFloat("ttt_phantom_killer_haunt_drop_cost")) .. " Power", "PureSkinItemInfo", x + w - self.pad , ry, dp < GetGlobalFloat("ttt_phantom_killer_haunt_drop_cost") and COLOR_RED or COLOR_GREEN, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT, true, self.scale)
+        draw.AdvancedText(tostring(GetGlobalFloat("ttt2_phantom_haunt_drop_cost")) .. " Power", "PureSkinItemInfo", x + w - self.pad , ry, dp < GetGlobalFloat("ttt2_phantom_haunt_drop_cost") and COLOR_RED or COLOR_GREEN, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT, true, self.scale)
 
         ry = ry + bh + self.pad
 
         draw.AdvancedText("Left Click", "PureSkinItemInfo", rx , ry, fontColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_RIGHT, true, self.scale)
         draw.AdvancedText("Attack for the player", "PureSkinItemInfo", x + w * 0.5 , ry, fontColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT, true, self.scale)
-        draw.AdvancedText(tostring(GetGlobalFloat("ttt_phantom_killer_haunt_attack_cost")) .. " Power", "PureSkinItemInfo", x + w - self.pad , ry, dp < GetGlobalFloat("ttt_phantom_killer_haunt_attack_cost") and COLOR_RED or COLOR_GREEN, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT, true, self.scale)
+        draw.AdvancedText(tostring(GetGlobalFloat("ttt2_phantom_haunt_attack_cost")) .. " Power", "PureSkinItemInfo", x + w - self.pad , ry, dp < GetGlobalFloat("ttt2_phantom_haunt_attack_cost") and COLOR_RED or COLOR_GREEN, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT, true, self.scale)
 
     end
 end
