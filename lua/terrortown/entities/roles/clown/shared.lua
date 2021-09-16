@@ -5,7 +5,6 @@ if SERVER then
 	resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_clo.vmt")
 	resource.AddFile("sound/clown/clown_sound.wav")
 	util.PrecacheSound("clown/clown_sound.wav")
-	
 end
 
 function ROLE:PreInitialize()
@@ -38,7 +37,7 @@ hook.Add("TTTUlxDynamicRCVars", "TTTUlxDynamicCloCVars", function(tbl)
       slider = true,
       min = 0,
       max = 5,
-      decimal = 0,
+      decimal = 1,
       desc = "How much extra damage the killer clown gets (Def. 0)"
   	})
   	table.insert(tbl[ROLE_CLOWN], {
@@ -54,7 +53,7 @@ hook.Add("TTTUlxDynamicRCVars", "TTTUlxDynamicCloCVars", function(tbl)
       slider = true,
       min = 0,
       max = 100,
-      decimal = true,
+      decimal = 0,
       desc = "Clowns health when transforming into KillerClown (Def. 0)"
   	})
 	table.insert(tbl[ROLE_CLOWN], {
@@ -71,16 +70,12 @@ end)
 
 if SERVER then
 	CreateConVar("ttt2_clown_damage_bonus", "0", {FCVAR_NOTIFY, FCVAR_ARCHIVE})
-	CreateConVar("ttt2_clown_activation_credits", "0", {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 	CreateConVar("ttt2_clown_entity_damage", "1", {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 	CreateConVar("ttt2_clown_environmental_damage", "1", {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 	CreateConVar("ttt2_clown_health_on_transform", "0", {FCVAR_NOTIFY, FCVAR_ARCHIVE})
 
-	local KillerClown = false
-
 	local function ResetClown()
-		KillerClown = false
-		print("Clown Reset Complete")
+		-- Nothing to reset yet
 	end
 	
 
@@ -123,14 +118,12 @@ if SERVER then
 						ply:SetHealth(health)
 					end
 
-					ply:SetNWBool("KillerClownActive", true)
 					ply:PrintMessage(HUD_PRINTCENTER, "Kill them all!")
 
 					net.Start("NewClownConfetti")
 					net.WriteEntity(ply)
 					net.Broadcast()
 
-					KillerClown = true
 					print("Killer clown is on the loose!")
 				end
 			end
@@ -173,12 +166,14 @@ if SERVER then
 
 	-- We'll check for players alive here to prevent winning if possible
 	hook.Add("DoPlayerDeath", "KillerClownChecks", function(victim, attacker, dmginfo)
-		if victim:IsValid() and victim:IsPlayer() and KillerClown == false then
-			KillerClownChecks(victim, attacker)
-		end
-
-		if victim:IsValid() and victim:IsPlayer()  and victim:GetSubRole() == ROLE_CLOWN then
-			KillerClown = true -- Lets not bother checking anymore because they died
+		if victim:IsValid() and victim:IsPlayer() then
+			local players = player.GetAll()	
+			for i = 1, #players do
+				local ply = players[i]
+				if ply:IsValid() and ply:Alive() and ply:GetSubRole() == ROLE_CLOWN then -- Only continue if a living clown is found
+					KillerClownChecks(victim, attacker)
+				end
+			end
 		end
 	end)
 

@@ -1,6 +1,5 @@
 if SERVER then
 
-	-- Get a table of all the players current weapons
 	function GetPlayerWeapons(ply)
 	    local weapons = {}
 	    for i = 1, #ply:GetWeapons() do
@@ -31,7 +30,6 @@ if SERVER then
 	    return weapons
 	end
 
-	-- Strip the players weapon
 	function StripPlayerWeaponAndAmmo(ply, weapon)
 	    ply:StripWeapon(weapon.class)
 	    if weapon.primary_ammo then
@@ -41,8 +39,6 @@ if SERVER then
 	        ply:SetAmmo(0, weapon.secondary_ammo_type)
 	    end
 	end
-
-	-- Give the player the weapon
 	function GivePlayerWeaponAndAmmo(ply, weapon)
 	    ply:Give(weapon.class)
 	    if weapon.primary_ammo then
@@ -53,7 +49,7 @@ if SERVER then
 	    end
 	end
 
-	-- Return casual role names from official role names
+
 	function RoleCheck(role)
 		local roleName = nil
 		if role == ROLE_SWAPPER then
@@ -146,5 +142,4 @@ if SERVER then
 
 	    return false
 	end
-	
 end

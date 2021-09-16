@@ -1,13 +1,13 @@
 AddCSLuaFile()
 
 if SERVER then
-	resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_pha.vmt")
+	resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_phn.vmt")
 end
 
 function ROLE:PreInitialize()
 	self.color = Color(82, 226, 255, 255)
 
-	self.abbr = "pha" -- abbreviation
+	self.abbr = "phn" -- abbreviation
 	self.radarColor = Color(150, 150, 150) -- color if someone is using the radar
 	self.surviveBonus = 0 -- bonus multiplier for every survive while another player was killed
 	self.scoreKillsMultiplier = 1 -- multiplier for kill of player of another team
@@ -177,65 +177,7 @@ if SERVER then
 		deadPhantoms = {}
 		print("Phantom Reset Complete")
 	end
-
-	function PhantomChecks(ply)
-		if ply:GetNWBool("Haunted", false) then
-
-			local respawn = false
-			local phantomUsers = table.GetKeys(deadPhantoms)
-			for i = 1, #phantomUsers do
-				local phantom = deadPhantoms[phantomUsers[i]]
-
-				if phantom.attacker == ply:SteamID64() and IsValid(phantom.player) then
-					local deadPhantom = phantom.player
-					deadPhantom:SetNWBool("Haunting", false)
-					deadPhantom:SetNWInt("HauntingPower", 0)
-					timer.Remove(deadPhantom:Nick() .. "HauntingPower")
-					if not deadPhantom:Alive() then
-						-- Find the Phantom's corpse
-						local phantomBody = deadPhantom.server_ragdoll or deadPhantom:GetRagdollEntity()
-						if IsValid(phantomBody) or not GetConVar("ttt2_phantom_burn"):GetBool() then
-							PhantomRevive(deadPhantom, phantomBody)						
-							respawn = true
-						else
-							deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died but your body has been destroyed.")
-						end
-					end
-				end
-
-			ply:SetNWBool("Haunted", false)
-			SendFullStateUpdate()
-
-			end	
-		end	
-	end
-
-	function PhantomRevive(ply, plybody)
-		ply:Revive(
-	      0,
-	      function()
-			local health = GetConVar("ttt2_phantom_respawn_health"):GetInt()
-			if GetConVar("ttt2_phantom_respawn_weaker"):GetBool() then
-				-- Check how many times phantom has died and devide res health by that if convar allows
-				local plymulti = deadPhantoms[ply:SteamID64()].times
-
-				for _ = 1, plymulti - 1 do
-					health = health / 2
-				end
-				health = math.max(1, math.Round(health))
-			end
-			ply:SetHealth(health)
-			plybody:Remove()
-			ply:SetNWString("HauntingTarget", nil)
-			ply:PrintMessage(HUD_PRINTCENTER, "Your attacker died and you have been respawned.")
-	        ply:ResetConfirmPlayer()
-	      end,
-	      nil,
-	      false,
-	      true
-	    )
-	end
-
+	
 	-- Lets make sure no weird haunting stuff is happening outside of the round and reset everyone to normal
 	hook.Add("TTTPrepareRound", "PhantomPrepareRound", ResetPhantom)
 	hook.Add("TTTBeginRound", "PhantomStartRound", ResetPhantom)
@@ -346,6 +288,66 @@ if SERVER then
 	hook.Add("PostPlayerDeath", "PhantomPostDeath", function(ply)
 		PhantomChecks(ply)
 	end)
+
+
+
+	function PhantomChecks(ply)
+		if ply:GetNWBool("Haunted", false) then
+
+			local respawn = false
+			local phantomUsers = table.GetKeys(deadPhantoms)
+			for i = 1, #phantomUsers do
+				local phantom = deadPhantoms[phantomUsers[i]]
+
+				if phantom.attacker == ply:SteamID64() and IsValid(phantom.player) then
+					local deadPhantom = phantom.player
+					deadPhantom:SetNWBool("Haunting", false)
+					deadPhantom:SetNWInt("HauntingPower", 0)
+					timer.Remove(deadPhantom:Nick() .. "HauntingPower")
+					if not deadPhantom:Alive() then
+						-- Find the Phantom's corpse
+						local phantomBody = deadPhantom.server_ragdoll or deadPhantom:GetRagdollEntity()
+						if IsValid(phantomBody) or not GetConVar("ttt2_phantom_burn"):GetBool() then
+							PhantomRevive(deadPhantom, phantomBody)						
+							respawn = true
+						else
+							deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died but your body has been destroyed.")
+						end
+					end
+				end
+
+			ply:SetNWBool("Haunted", false)
+			SendFullStateUpdate()
+
+			end	
+		end	
+	end
+
+	function PhantomRevive(ply, plybody)
+		ply:Revive(
+	      0,
+	      function()
+			local health = GetConVar("ttt2_phantom_respawn_health"):GetInt()
+			if GetConVar("ttt2_phantom_respawn_weaker"):GetBool() then
+				-- Check how many times phantom has died and devide res health by that if convar allows
+				local plymulti = deadPhantoms[ply:SteamID64()].times
+
+				for _ = 1, plymulti - 1 do
+					health = health / 2
+				end
+				health = math.max(1, math.Round(health))
+			end
+			ply:SetHealth(health)
+			plybody:Remove()
+			ply:SetNWString("HauntingTarget", nil)
+			ply:PrintMessage(HUD_PRINTCENTER, "Your attacker died and you have been respawned.")
+	        ply:ResetConfirmPlayer()
+	      end,
+	      nil,
+	      false,
+	      true
+	    )
+	end
 
 end
 

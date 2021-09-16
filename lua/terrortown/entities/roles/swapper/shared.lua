@@ -93,14 +93,12 @@ if SERVER then
 		-- Strip all the attackers weapons
 		for i = 1, #attacker.weapons do
 			local weapon = attacker.weapons[i]
-			print("Stripping weapon " .. tostring(weapon.class) .. " from " .. tostring(attacker))
 			StripPlayerWeaponAndAmmo(attacker, weapon)
 		end
 
 		-- Give the attacker all their victims gear
 		for i = 1, #victim.weapons do
 			local weapon = victim.weapons[i]
-			print("Attempting to give " .. tostring(weapon.class) .. " to " .. tostring(attacker))
             GivePlayerWeaponAndAmmo(attacker, weapon)
         end
         attacker:SelectWeapon("weapon_zm_improvised")
@@ -110,20 +108,17 @@ if SERVER then
 		-- Strip all equipment from the victim
 		for i = 1, #victim.weapons do
 			local weapon = victim.weapons[i]
-			print("Stripping weapon " .. tostring(weapon.class) .. " from " .. tostring(victim))
 			StripPlayerWeaponAndAmmo(victim, weapon)
 		end
 
 		-- Give the victim all their attackers gear
 		for i = 1, #attacker.weapons do
 			local weapon = attacker.weapons[i]
-			print("Attempting to give " .. tostring(weapon.class) .. " to " .. tostring(victim))
             GivePlayerWeaponAndAmmo(victim, weapon)
         end
         victim:SelectWeapon("weapon_zm_improvised")
 
         timer.Simple(0.1, function()
-        	print("Emptying swapper tables")
 			attacker.weapons = {}
         	victim.weapons = {}
 	    end)
