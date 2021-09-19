@@ -191,7 +191,7 @@ if SERVER then
 	      function()	-- @param[opt] function OnRevive The @{function} that should be run if the @{Player} revives
 	        ply:ResetConfirmPlayer()
 	        SendFullStateUpdate()
-	      end,
+	      end
 	    )
 	end
 end

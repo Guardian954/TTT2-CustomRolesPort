@@ -73,7 +73,7 @@ if SERVER then
 			ply:SetDefaultCredits()
 	        ply:ResetConfirmPlayer()
 	        SendFullStateUpdate()
-	      end,
+	      end
 	    )
 	end
 
