@@ -67,22 +67,13 @@ if SERVER then
 		ply:Revive(
 	      0,
 	      function()
-	      	local body = ply.server_ragdoll or ply:GetRagdollEntity()
 			local health = GetConVar("ttt2_swapper_respawn_health"):GetInt()
 			ply:SetHealth(health)
-			if IsValid(body) then
-                ply:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
-                ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-                body:Remove()
-            end
             ply:SetRole(ply.newrole)
 			ply:SetDefaultCredits()
 	        ply:ResetConfirmPlayer()
 	        SendFullStateUpdate()
 	      end,
-	      nil,
-	      false,
-	      true
 	    )
 	end
 

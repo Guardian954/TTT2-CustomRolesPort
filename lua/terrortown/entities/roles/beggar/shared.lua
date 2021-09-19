@@ -188,20 +188,10 @@ if SERVER then
 	function BeggarRevive(ply)
 		ply:Revive(
 	      0,
-	      function()
-	      	local body = ply.server_ragdoll or ply:GetRagdollEntity()
-			if IsValid(body) then
-                ply:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
-                ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-                body:Remove()
-            end
-			ply:SetDefaultCredits()
+	      function()	-- @param[opt] function OnRevive The @{function} that should be run if the @{Player} revives
 	        ply:ResetConfirmPlayer()
 	        SendFullStateUpdate()
 	      end,
-	      nil,
-	      false,
-	      true
 	    )
 	end
 end
