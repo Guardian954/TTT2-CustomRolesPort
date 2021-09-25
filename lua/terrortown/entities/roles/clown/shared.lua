@@ -5,17 +5,26 @@ if SERVER then
 	resource.AddFile("materials/vgui/ttt/dynamic/roles/icon_clo.vmt")
 	resource.AddFile("sound/clown/clown_sound.wav")
 	util.PrecacheSound("clown/clown_sound.wav")
+
+	
+
 end
+
+
+roles.InitCustomTeam(ROLE.name, {
+		icon = "vgui/ttt/dynamic/roles/icon_clo",
+		color = Color(245, 48, 155, 255)
+})
 
 function ROLE:PreInitialize()
 	self.color = Color(245, 48, 155, 255)
 
 	self.abbr = "clo" -- abbreviation
 	self.radarColor = Color(245, 48, 155) -- color if someone is using the radar
-	self.surviveBonus = 0 -- bonus multiplier for every survive while another player was killed
-	self.scoreKillsMultiplier = 1 -- multiplier for kill of player of another team
-	self.scoreTeamKillsMultiplier = -8 -- multiplier for teamkill
-	self.preventWin = true -- set true if role can't win (maybe because of own / special win conditions)
+	self.surviveBonus = 2 -- bonus multiplier for every survive while another player was killed
+	self.scoreKillsMultiplier = 0 -- multiplier for kill of player of another team
+	self.scoreTeamKillsMultiplier = 0 -- multiplier for teamkill
+	self.preventWin = false -- set true if role can't win (maybe because of own / special win conditions)
 	self.defaultTeam = TEAM_CLOWN -- the team name: roles with same team name are working together
 	self.defaultEquipment = SPECIAL_EQUIPMENT -- here you can set up your own default equipment
 
@@ -91,14 +100,22 @@ if SERVER then
 			
 			if ply:IsValid() and ply:Alive() and ply ~= victim then
 				local team = ply:GetTeam()
-
-				if team ~= TEAM_JESTER then
+				local preventWin 
+				if ply:GetSubRoleData().preventWin == nil then
+					preventWin = false
+					print("Player with team " .. tostring(team) .. " has no preventWin so it was set to: " .. tostring(preventWin))
+				else
+					preventWin = ply:GetSubRoleData().preventWin
+					print("Player with team " .. tostring(team) .. " has preventWin: " .. tostring(preventWin))
+				end
+				if ply:GetSubRole() ~= (ROLE_CLOWN) and not preventWin then -- Dont log the clowns team now that theyre independant or any role that cannot win by default
 
 					if not teams[team] then
 						teams[team] = {count = 1}
 					else
 						teams[team] = {count = teams[team].count + 1}
 					end
+			
 				end
 			end
 		end

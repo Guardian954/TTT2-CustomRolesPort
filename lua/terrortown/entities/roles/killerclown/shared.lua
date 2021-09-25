@@ -12,11 +12,12 @@ function ROLE:PreInitialize()
 	self.abbr = "kcl" -- abbreviation
 	self.radarColor = Color(245, 48, 155) -- color if someone is using the radar
 	self.surviveBonus = 0 -- bonus multiplier for every survive while another player was killed
-	self.scoreKillsMultiplier = 1 -- multiplier for kill of player of another team
+	self.scoreKillsMultiplier = 2 -- multiplier for kill of player of another team
 	self.scoreTeamKillsMultiplier = -8 -- multiplier for teamkill
 	self.preventWin = false -- set true if role can't win (maybe because of own / special win conditions)
 	self.defaultTeam = TEAM_CLOWN -- the team name: roles with same team name are working together
 	self.defaultEquipment = SPECIAL_EQUIPMENT -- here you can set up your own default equipment
+	self.notSelectable = true
 
 	if not startCredits then
 		startCredits = 0
@@ -32,6 +33,10 @@ function ROLE:PreInitialize()
 		togglable = false, -- option to toggle a role for a client if possible (F1 menu)
 		shopFallback = SHOP_TRAITOR,
 	}
+end
+
+function ROLE:Initialize()
+	roles.SetBaseRole(self, ROLE_CLOWN)
 end
 
 if SERVER then
