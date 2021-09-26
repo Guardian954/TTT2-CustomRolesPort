@@ -109,38 +109,52 @@ if SERVER then
 		if weapon.CanBuy and not weapon.AutoSpawnable then
 		    if not weapon.BoughtBy then
 		        weapon.BoughtBy = ply
-		    elseif ply:GetSubRole() == ROLE_BEGGAR then --and (weapon.BoughtBy:GetTeam() == (ROLE_TRAITOR or ROLE_INNOCENT)) then
-		    	print("Beggar has picked up a " .. tostring(weapon) .. " dropped by " .. tostring(weapon.BoughtBy) .. " who has this team " .. tostring(weapon.BoughtBy:GetTeam()))
+		    elseif ply:GetSubRole() == ROLE_BEGGAR then
 		        local role
-		        if weapon.BoughtBy:GetTeam() == TEAM_TRAITOR then
+		        local teamString
+		        local donator = weapon.BoughtBy
+		        local team = weapon.BoughtBy:GetTeam()
+
+		        print("Beggar has picked up a " .. tostring(weapon) .. " dropped by " .. tostring(donator) .. " who has this team " .. tostring(team))
+
+		        if team == TEAM_TRAITOR then
 		            role = ROLE_TRAITOR
-		            team = "traitors team"
-
-		        elseif weapon.BoughtBy:GetTeam() == TEAM_INNOCENT then
+		            teamString = "traitors team."
+		        elseif team == TEAM_INNOCENT then
 		            role = ROLE_INNOCENT
-		            team = "innocents team"
-
+		            teamString = "innocents team."
+		        elseif team == TEAM_JACKAL then
+		        	if SIDEKICK then
+		        	role = ROLE_SIDEKICK
+		        	teamString = "jackals team as a sidekick."
+		        	else
+		        	role = ROLE_JACKAL
+		        	teamString = "jackals team."
+		        	end
+		        elseif team == TEAM_DOPPELGANGER then
+		        	role = donator:GetSubRole()
+					teamString = "doppelgangers team as their current role"
 		        else
-		        	print("Non innocent or traiter supplied weapon given to beggar: " .. tostring(weapon) .. " by " .. tostring(weapon.BoughtBy)) -- Another role has dropped something for the beggar, print so we can see if its shop bought and who the player is.
-		        	role = weapon.BoughtBy:GetSubRole()	
-		        	team = weapon.BoughtBy:GetTeam()	
-
+		        	print("Non innocent or traiter supplied weapon given to beggar: " .. tostring(weapon) .. " by " .. tostring(donator)) -- Another role has dropped something for the beggar, print so we can see if its shop bought and who the player is.
+		        	role = donator:GetSubRole()	
+		        	teamString = tostring(team)
 		        end
 
-		        ply:SetRole(role)
-		        ply:PrintMessage(HUD_PRINTTALK, "You have joined the " .. team)
-		        ply:PrintMessage(HUD_PRINTCENTER, "You have joined the " .. team)
-		        timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
+		        ply:SetRole(role, team) -- added the team parameter mainly for the Jackal right now
+		        SendFullStateUpdate()
+		        ply:UpdateTeam(team) 
+		        ply:PrintMessage(HUD_PRINTTALK, "You have joined the " .. teamString)
+		        ply:PrintMessage(HUD_PRINTCENTER, "You have joined the " .. teamString)
+		        timer.Simple(0.5, function() SendFullStateUpdate() end)
 		        
 		        local mode = GetConVar("ttt2_beggar_reveal_mode"):GetInt()
-
 		        local players = player.GetAll()
 		        if mode ~= 0 then
 					for i = 1, #players do
 						local v = players[i]
 			            if (mode == 1 and (role == ROLE_INNOCENT and v:GetSubRole() == ROLE_DETECTIVE) or (role == ROLE_TRAITOR and v:GetTeam() == TEAM_TRAITOR)) or (mode == 2 and ply:GetTeam() == v:GetTeam()) or (mode == 3) then
-			                v:PrintMessage(HUD_PRINTTALK, "The beggar has joined the " .. team)
-			                v:PrintMessage(HUD_PRINTCENTER, "The beggar has joined the " .. team)
+			                v:PrintMessage(HUD_PRINTTALK, "The beggar has joined the " .. teamString)
+			                v:PrintMessage(HUD_PRINTCENTER, "The beggar has joined the " .. teamString)
 			            end
 			        end
 		        end

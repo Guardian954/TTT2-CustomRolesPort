@@ -128,20 +128,23 @@ if SERVER then
 		if #NoOfTeams == 1 then
 			for i = 1, #players do
 				local ply = players[i]
+				local team = ply:GetTeam()
 				if ply:GetSubRole() == ROLE_CLOWN then
 
-					ply:SetRole(ROLE_KILLERCLOWN)
+					ply:SetRole(ROLE_KILLERCLOWN, team) -- Team parameter added to account for roles like the doppelganger, should let them play along but with their own team still.
+					SendFullStateUpdate()
+		        	ply:UpdateTeam(team) 
+
 					local health = GetConVar("ttt2_clown_health_on_transform"):GetInt()
 					if health ~= 0 then
 						ply:SetHealth(health)
 					end
-
 					ply:PrintMessage(HUD_PRINTCENTER, "Kill them all!")
 
 					net.Start("NewClownConfetti")
 					net.WriteEntity(ply)
 					net.Broadcast()
-
+					SendFullStateUpdate()
 					print("Killer clown is on the loose!")
 				end
 			end

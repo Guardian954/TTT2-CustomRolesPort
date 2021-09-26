@@ -69,8 +69,10 @@ if SERVER then
 	      function()
 			local health = GetConVar("ttt2_swapper_respawn_health"):GetInt()
 			ply:SetHealth(health)
-            ply:SetRole(ply.newrole)
-			ply:SetDefaultCredits()
+            ply:SetRole(ply.newrole, ply.newteam)
+	        SendFullStateUpdate()
+	        ply:UpdateTeam(ply.newteam)
+	        ply:SetDefaultCredits()
 	        ply:ResetConfirmPlayer()
 	        SendFullStateUpdate()
 	      end
@@ -113,7 +115,6 @@ if SERVER then
 			attacker.weapons = {}
         	victim.weapons = {}
 	    end)
-
 	end
 
 	-- Hide the swapper as a normal jester to the traitors
@@ -175,6 +176,7 @@ if SERVER then
 
 			
 			victim.newrole = attacker:GetSubRole()
+			victim.newteam = attacker:GetTeam()
 
 			-- Handle the killers swap to his new life of swapper
 			attacker:SetRole(ROLE_SWAPPER)
@@ -197,9 +199,6 @@ if SERVER then
 			timer.Simple(0.01, function()
 				SwapWeapons(victim, attacker)
 	        end)
-
-
-
         end
 	end)
 
